@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DemoBank — Admin Panel</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link href="dashboard.css" rel="stylesheet">
+  <link href="admin.css" rel="stylesheet">
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="sidebar-brand">
+    <div class="brand-logo">
+      <div class="logo-icon">🏦</div>
+      <div class="brand-name">Demo<span>Bank</span></div>
+    </div>
+  </div>
+
+  <div class="sidebar-user">
+    <div class="user-avatar" style="background:linear-gradient(135deg,rgba(255,193,7,0.25),rgba(255,193,7,0.1));border-color:rgba(255,193,7,0.6)">👑</div>
+    <div class="user-name">Admin Panel</div>
+    <div class="user-acc" style="color:var(--yellow);opacity:0.8;font-size:10px;letter-spacing:1px">SUPER ADMINISTRATOR</div>
+  </div>
+
+  <nav class="nav">
+    <div class="nav-label">Dashboard</div>
+    <div class="nav-item active" onclick="showSection('overview')">
+      <span class="nav-icon">⊞</span> Overview
+    </div>
+    <div class="nav-label">Management</div>
+    <div class="nav-item" onclick="showSection('accounts')">
+      <span class="nav-icon">👥</span> All Accounts
+    </div>
+    <div class="nav-item" onclick="showSection('transactions')">
+      <span class="nav-icon">⇄</span> All Transactions
+    </div>
+    <div class="nav-item" onclick="showSection('loanenquiry')">
+      <span class="nav-icon">♦</span> Loan Enquiry
+      <span class="pending-badge" id="pendingBadge" style="display:none">0</span>
+    </div>
+    <div class="nav-label">User Details</div>
+    <div class="nav-item" id="nav-userdetail" style="display:none" onclick="showSection('userdetail')">
+      <span class="nav-icon">◉</span> <span id="navUserName">User Profile</span>
+    </div>
+  </nav>
+
+  <div class="sidebar-footer">
+    <a class="btn-logout" href="index.html" onclick="adminLogout()">
+      <span>⎋</span> Sign Out
+    </a>
+  </div>
+</aside>
+
+<!-- MAIN -->
+<main class="main">
+  <div class="topbar">
+    <div class="page-title" id="pageTitle">Admin Overview</div>
+    <div class="topbar-right">
+      <span class="badge badge-gold">👑 Admin</span>
+      <span class="badge badge-green">● Online</span>
+    </div>
+  </div>
+
+  <div class="content">
+
+    <!-- ── OVERVIEW ── -->
+    <div class="section active" id="section-overview">
+      <div class="cards-row" style="grid-template-columns:repeat(4,1fr)">
+        <div class="stat-card highlight">
+          <div class="stat-icon">👥</div>
+          <div class="stat-label">Total Accounts</div>
+          <div class="stat-value" id="statTotalAccounts">0</div>
+          <div class="stat-sub">Registered users</div>
+        </div>
+        <div class="stat-card" style="--card-accent:rgba(46,125,50,0.08)">
+          <div class="stat-icon">💰</div>
+          <div class="stat-label">Total Deposits</div>
+          <div class="stat-value" id="statTotalDeposits">₹0</div>
+          <div class="stat-sub">Across all accounts</div>
+        </div>
+        <div class="stat-card" style="--card-accent:rgba(255,193,7,0.08)">
+          <div class="stat-icon">♦</div>
+          <div class="stat-label">Active Loans</div>
+          <div class="stat-value" id="statActiveLoans">0</div>
+          <div class="stat-sub">Disbursed loans</div>
+        </div>
+        <div class="stat-card" style="--card-accent:rgba(229,57,53,0.06)">
+          <div class="stat-icon">⏳</div>
+          <div class="stat-label">Pending Loans</div>
+          <div class="stat-value" id="statPendingLoans" style="color:var(--red)">0</div>
+          <div class="stat-sub">Awaiting approval</div>
+        </div>
+      </div>
+
+      <div class="cards-row" style="grid-template-columns:repeat(3,1fr);margin-bottom:28px">
+        <div class="stat-card">
+          <div class="stat-icon">📊</div>
+          <div class="stat-label">Total Transactions</div>
+          <div class="stat-value" id="statTotalTxns">0</div>
+          <div class="stat-sub">All time</div>
+        </div>
+        <div class="stat-card" style="--card-accent:rgba(46,125,50,0.08)">
+          <div class="stat-icon">✅</div>
+          <div class="stat-label">Active Accounts</div>
+          <div class="stat-value" id="statActiveAccounts">0</div>
+          <div class="stat-sub">Status: Active</div>
+        </div>
+        <div class="stat-card" style="--card-accent:rgba(229,57,53,0.06)">
+          <div class="stat-icon">🏦</div>
+          <div class="stat-label">Total Loan Value</div>
+          <div class="stat-value" id="statTotalLoanVal">₹0</div>
+          <div class="stat-sub">Approved principals</div>
+        </div>
+      </div>
+
+      <!-- Pending Loan Quick View -->
+      <div class="card" style="margin-bottom:20px">
+        <div class="card-header">
+          <div class="card-title">⚡ Pending Loan Approvals</div>
+          <button class="btn btn-outline" onclick="showSection('loanenquiry')" style="padding:8px 16px;font-size:12px;">View All</button>
+        </div>
+        <div class="card-body" id="overviewPendingLoans">
+          <div class="loading">Loading pending loans…</div>
+        </div>
+      </div>
+
+      <!-- Recent Accounts -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">Recently Opened Accounts</div>
+          <button class="btn btn-outline" onclick="showSection('accounts')" style="padding:8px 16px;font-size:12px;">View All</button>
+        </div>
+        <div class="card-body" style="padding:0">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>#</th><th>Name</th><th>Account No.</th><th>Type</th>
+                <th>Balance</th><th>Status</th><th>Joined</th><th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="recentAccountsBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── ALL ACCOUNTS ── -->
+    <div class="section" id="section-accounts">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">All Account Holders</div>
+          <div style="display:flex;gap:10px;align-items:center">
+            <input type="text" id="accountSearch" placeholder="Search name / email / account…"
+              oninput="filterAccounts()"
+              style="padding:8px 14px;border:1.5px solid var(--border);border-radius:8px;font-size:13px;font-family:'DM Sans',sans-serif;outline:none;width:260px">
+            <span class="badge badge-gold" id="accountCountBadge">0 users</span>
+          </div>
+        </div>
+        <div class="card-body" style="padding:0">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>#</th><th>Name</th><th>Email</th><th>Phone</th>
+                <th>Account No.</th><th>Type</th><th>Balance</th><th>Status</th><th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="allAccountsBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── ALL TRANSACTIONS ── -->
+    <div class="section" id="section-transactions">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">All Transactions (System-wide)</div>
+          <div style="display:flex;gap:10px;align-items:center">
+            <select id="txFilterType" onchange="renderAllTransactions()"
+              style="padding:8px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:13px;font-family:'DM Sans',sans-serif;outline:none">
+              <option value="">All Types</option>
+              <option value="Credit">Credit Only</option>
+              <option value="Debit">Debit Only</option>
+            </select>
+            <span class="badge badge-gold" id="allTxCountBadge">0 records</span>
+          </div>
+        </div>
+        <div class="card-body" style="padding:0">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Txn ID</th><th>Account Holder</th><th>Account No.</th><th>Type</th>
+                <th>Amount</th><th>Description</th><th>Date & Time</th><th>Status</th>
+              </tr>
+            </thead>
+            <tbody id="allTransactionsBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── LOAN ENQUIRY ── -->
+    <div class="section" id="section-loanenquiry">
+      <div style="margin-bottom:20px">
+        <div style="font-family:'Playfair Display',serif;font-size:22px;color:var(--text-dark);margin-bottom:4px">Loan Enquiry &amp; Approvals</div>
+        <div style="font-size:13px;color:var(--text-muted)">Review, approve or reject customer loan applications submitted from the customer dashboard.</div>
+      </div>
+
+      <!-- Loan summary cards -->
+      <div class="cards-row" style="grid-template-columns:repeat(3,1fr);margin-bottom:24px" id="loanSummaryCards">
+        <div class="stat-card" style="--card-accent:rgba(255,152,0,0.1)">
+          <div class="stat-icon">⏳</div>
+          <div class="stat-label">Pending</div>
+          <div class="stat-value" id="leSummaryPending" style="color:#E65100">0</div>
+          <div class="stat-sub">Awaiting decision</div>
+        </div>
+        <div class="stat-card" style="--card-accent:rgba(46,125,50,0.08)">
+          <div class="stat-icon">✅</div>
+          <div class="stat-label">Approved</div>
+          <div class="stat-value" id="leSummaryApproved" style="color:#2E7D32">0</div>
+          <div class="stat-sub">Disbursed to accounts</div>
+        </div>
+        <div class="stat-card" style="--card-accent:rgba(229,57,53,0.06)">
+          <div class="stat-icon">❌</div>
+          <div class="stat-label">Rejected</div>
+          <div class="stat-value" id="leSummaryRejected" style="color:var(--red)">0</div>
+          <div class="stat-sub">Applications declined</div>
+        </div>
+      </div>
+
+      <!-- Tab buttons -->
+      <div style="display:flex;gap:12px;margin-bottom:20px">
+        <button class="loan-tab-btn active" onclick="switchLoanTab('pending')"  id="loanTabPending">
+          ⏳ Pending Approvals <span id="pendingCount"  class="tab-count">0</span>
+        </button>
+        <button class="loan-tab-btn"        onclick="switchLoanTab('approved')" id="loanTabApproved">
+          ✅ Approved          <span id="approvedCount" class="tab-count">0</span>
+        </button>
+        <button class="loan-tab-btn"        onclick="switchLoanTab('rejected')" id="loanTabRejected">
+          ❌ Rejected          <span id="rejectedCount" class="tab-count">0</span>
+        </button>
+      </div>
+
+      <div id="loanTabContent">
+        <div class="loading">Loading loan applications…</div>
+      </div>
+    </div>
+
+    <!-- ── USER DETAIL ── -->
+    <div class="section" id="section-userdetail">
+      <div id="userDetailContent">
+        <div class="loading">Loading user profile…</div>
+      </div>
+    </div>
+
+  </div><!-- /content -->
+</main>
+
+<!-- MODAL: Account Status Change -->
+<div class="modal-overlay" id="statusModal" onclick="closeModal('statusModal')">
+  <div class="modal-box" onclick="event.stopPropagation()">
+    <div class="modal-title" id="statusModalTitle">Change Account Status</div>
+    <p style="font-size:14px;color:var(--text-muted);margin-bottom:20px" id="statusModalMsg">Are you sure?</p>
+    <div style="display:flex;gap:10px;justify-content:flex-end">
+      <button class="btn btn-outline" onclick="closeModal('statusModal')">Cancel</button>
+      <button class="btn btn-black"   id="statusModalConfirm">Confirm</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: Loan Decision -->
+<div class="modal-overlay" id="loanModal" onclick="closeModal('loanModal')">
+  <div class="modal-box" onclick="event.stopPropagation()">
+    <div class="modal-title" id="loanModalTitle">Loan Decision</div>
+    <div id="loanModalDetails"
+      style="background:var(--off-white);border-radius:10px;padding:16px;margin-bottom:16px;font-size:13px;"></div>
+    <div class="field" id="rejectReasonWrap" style="display:none">
+      <label>Rejection Reason</label>
+      <textarea id="rejectReason" rows="3"
+        style="width:100%;padding:10px 12px;border:1.5px solid var(--border);border-radius:8px;font-family:'DM Sans',sans-serif;font-size:13px;outline:none;resize:vertical"
+        placeholder="Enter reason for rejection…"></textarea>
+    </div>
+    <div style="display:flex;gap:10px;justify-content:flex-end">
+      <button class="btn btn-outline" onclick="closeModal('loanModal')">Cancel</button>
+      <button class="btn" id="loanModalAction" style="min-width:100px">Confirm</button>
+    </div>
+  </div>
+</div>
+
+<script src="admin.js"></script>
+</body>
+</html>

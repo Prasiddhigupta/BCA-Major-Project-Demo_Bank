@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head> 
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DemoBank — Premium Banking</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<div class="left-panel">
+  <div class="grid-lines"></div>
+
+  <div class="brand">
+    <div class="brand-logo">
+      <div class="logo-icon">🏦</div>
+      <div class="brand-name">Demo<span>Bank</span></div>
+    </div>
+    <div class="tagline">Premium Digital Banking</div>
+  </div>
+
+  <div class="hero-text">
+    <h1>Banking <em>Reimagined</em><br>for the Modern Era</h1>
+    <p>Experience seamless financial management with enterprise-grade security, instant transfers, and intelligent insights — all at your fingertips.</p>
+    <div class="stats-row">
+      <div class="stat">
+        <div class="stat-num">₹2.4Cr+</div>
+        <div class="stat-label">Transacted</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">99.9%</div>
+        <div class="stat-label">Uptime</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">256-bit</div>
+        <div class="stat-label">Encrypted</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card-visual">
+    <div class="card-chip"></div>
+    <div class="card-number">•••• •••• •••• 4291</div>
+    <div class="card-bottom">
+      <div>
+        <div class="card-holder">CARD HOLDER</div>
+      </div>
+      <div class="card-bank">DemoBank</div>
+    </div>
+  </div>
+</div>
+
+<div class="right-panel">
+  <div class="auth-container">
+    <div class="tab-switcher">
+      <button class="tab-btn active" onclick="switchTab('login')">Sign In</button>
+      <button class="tab-btn" onclick="switchTab('register')">Create Account</button>
+    </div>
+
+    <!-- LOGIN -->
+    <div class="form-panel active" id="loginPanel">
+      <h2 class="form-title">Welcome back</h2>
+      <p class="form-subtitle">Sign in to your DemoBank Account</p>
+      <div class="alert" id="loginAlert"></div>
+      <div class="field">
+        <label>Email Address</label>
+        <input type="email" id="loginEmail" placeholder="you@example.com">
+      </div>
+      <div class="field">
+        <label>Password</label>
+        <input type="password" id="loginPass" placeholder="••••••••" onkeydown="if(event.key==='Enter') doLogin()">
+      </div>
+      <button class="btn-primary" onclick="doLogin()">
+        Sign In to Dashboard
+        <div class="gold-line"></div>
+      </button>
+      <div class="demo-hint">
+        <strong>🔑 Demo Credentials</strong>
+        <div style="margin-bottom:4px">👤 <strong>Customer:</strong> arjun@demo.com &nbsp;|&nbsp; demo123</div>
+        <div>👑 <strong>Admin:</strong> admin@demobank.com &nbsp;|&nbsp; admin123</div>
+      </div>
+    </div>
+
+    <!-- REGISTER -->
+    <div class="form-panel" id="registerPanel">
+      <h2 class="form-title">Open Account</h2>
+      <p class="form-subtitle">Join DemoBank — it takes 2 minutes</p>
+      <div class="alert" id="regAlert"></div>
+      <div class="field-row">
+        <div class="field">
+          <label>Full Name</label>
+          <input type="text" id="regName" placeholder="Arjun Sharma">
+        </div>
+        <div class="field">
+          <label>Phone</label>
+          <input type="tel" id="regPhone" placeholder="9876543210">
+        </div>
+      </div>
+      <div class="field">
+        <label>Email Address</label>
+        <input type="email" id="regEmail" placeholder="you@example.com">
+      </div>
+      <div class="field">
+        <label>Password</label>
+        <input type="password" id="regPass" placeholder="Min. 6 characters">
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label>Account Type</label>
+          <select id="regAccType">
+            <option value="Savings">Savings</option>
+            <option value="Current">Current</option>
+            <option value="Salary">Salary</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>City</label>
+          <input type="text" id="regCity" placeholder="Agra">
+        </div>
+      </div>
+      <button class="btn-primary" onclick="doRegister()">
+        Create My Account
+        <div class="gold-line"></div>
+      </button>
+    </div>
+
+  </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
